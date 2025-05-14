@@ -1,0 +1,990 @@
+<!DOCTYPE html><html lang="en"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The_Time | Trade your time</title>
+    <link rel="shortcut icon" href="images/TIME.png" type="image/png">
+    <style>
+        @font-face {
+  font-family: "DSEG7";
+  src: url("../fonts/DSEG7-Classic-Regular.woff2") format("woff2"),
+    url("../fonts/DSEG7-Classic-Regular.woff") format("woff"),
+    url("../fonts/DSEG7-Classic-Regular.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap; /* Чтобы шрифт не "моргал" при загрузке */
+}
+
+:root {
+  --primary-color: #6eb90d;
+  --secondary-color: #6eb90d;
+  --dark-color: #0a121b;
+  --darker-color: #030303;
+  --text-color: #e0e0e0;
+  --error-color: #ff0033;
+  --yellow: #ffc400;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Orbitron", sans-serif;
+  background-color: var(--dark-color);
+  color: var(--text-color);
+  overflow-x: hidden;
+  position: relative;
+}
+
+.matrix-rain {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  opacity: 0.1;
+  pointer-events: none;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.cyber-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 0 30px 0;
+  border-bottom: 1px solid var(--primary-color);
+  margin-bottom: 30px;
+}
+
+.logo {
+  font-family: "Share Tech Mono", monospace;
+  font-size: 24px;
+  color: var(--primary-color);
+}
+
+.logo-bracket {
+  color: var(--secondary-color);
+}
+
+.cyber-nav ul {
+  display: flex;
+  list-style: none;
+}
+
+.cyber-nav a {
+  color: var(--text-color);
+  text-decoration: none;
+  margin: 0 15px;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  position: relative;
+  padding: 5px 0;
+}
+
+.cyber-nav a:hover {
+  color: var(--primary-color);
+}
+
+.cyber-nav a.active {
+  color: var(--primary-color);
+}
+
+.cyber-nav a.active::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background-color: var(--primary-color);
+}
+
+.user-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.username {
+  color: var(--primary-color);
+  font-family: "Orbitron", sans-serif;
+  margin-bottom: 5px;
+}
+
+.time-balance {
+  font-family: "DSEG7", monospace;
+  color: #ff0033; /* красный, как в фильме */
+  text-shadow: 0 0 10px rgba(255, 0, 51, 0.7);
+}
+
+.section {
+  display: none;
+  min-height: 70vh;
+}
+
+.section.active {
+  display: block;
+}
+
+.cyber-title {
+  color: var(--primary-color);
+  font-family: "Orbitron", sans-serif;
+  margin-bottom: 20px;
+  font-size: 20px;
+  position: relative;
+  padding-left: 15px;
+}
+
+.cyber-title::before {
+  content: "//";
+  position: absolute;
+  left: 0;
+  color: var(--secondary-color);
+}
+
+.search-bar {
+  display: flex;
+  margin-bottom: 30px;
+}
+
+.search-bar input {
+  flex-grow: 1;
+  padding: 10px 15px;
+  background-color: var(--darker-color);
+  border: 1px solid var(--secondary-color);
+  color: var(--text-color);
+  font-family: "Orbitron", sans-serif;
+  outline: none;
+}
+
+.search-bar input:focus {
+  border-color: var(--primary-color);
+}
+
+.cyber-button {
+  background-color: transparent;
+  border: 1px solid var(--primary-color);
+  color: var(--primary-color);
+  padding: 10px 20px;
+  font-family: "Orbitron", sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.3s;
+  margin-left: 10px;
+}
+
+.cyber-button:hover {
+  background-color: var(--primary-color);
+  color: var(--dark-color);
+}
+
+.offer-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.message {
+  border: 1px solid var(--yellow);
+  color: var(--yellow);
+}
+
+.message:hover {
+  background-color: var(--yellow);
+  color: var(--dark-color);
+}
+
+.offer-card {
+  background-color: var(--darker-color);
+  border: 1px solid var(--secondary-color);
+  padding: 20px;
+  transition: all 0.3s;
+  position: relative;
+}
+
+.offer-card:hover {
+  border-color: var(--primary-color);
+  transform: translateY(-5px);
+  box-shadow: 0 5px 15px rgba(0, 255, 65, 0.1);
+}
+
+.offer-title {
+  color: var(--primary-color);
+  font-size: 18px;
+  margin-bottom: 10px;
+  font-family: "Share Tech Mono", monospace;
+}
+
+.offer-description {
+  margin-bottom: 15px;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.offer-price {
+  color: var(--error-color);
+  font-family: "Share Tech Mono", monospace;
+  font-size: 16px;
+}
+
+.offer-author {
+  margin-top: 15px;
+  font-size: 12px;
+  color: #777;
+}
+
+.offer-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 15px;
+}
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+.dashboard-card {
+  background-color: var(--darker-color);
+  border: 1px solid var(--secondary-color);
+  padding: 20px;
+}
+
+.dashboard-card h3 {
+  color: var(--primary-color);
+  margin-bottom: 15px;
+  font-family: "Share Tech Mono", monospace;
+}
+
+.time-amount {
+  font-size: 24px;
+  color: var(--secondary-color);
+  font-family: "Share Tech Mono", monospace;
+}
+
+.user-offers {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.user-offer-item {
+  padding: 10px;
+  background-color: rgba(0, 143, 17, 0.1);
+  border-left: 3px solid var(--secondary-color);
+  font-size: 14px;
+}
+
+.profile-card {
+  grid-column: span 2;
+}
+
+.profile-info {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.avatar {
+  width: 80px;
+  height: 80px;
+  background-color: var(--secondary-color);
+  color: var(--dark-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: "Share Tech Mono", monospace;
+  font-size: 24px;
+}
+
+.profile-details p {
+  margin-bottom: 10px;
+  font-size: 14px;
+}
+
+.rating {
+  color: var(--primary-color);
+}
+
+.reg-date {
+  color: var(--secondary-color);
+}
+
+.messages-container {
+  display: flex;
+  height: 500px;
+  border: 1px solid var(--secondary-color);
+}
+
+.conversation-list {
+  width: 300px;
+  border-right: 1px solid var(--secondary-color);
+  overflow-y: auto;
+}
+
+.conversation-item {
+  padding: 15px;
+  border-bottom: 1px solid rgba(0, 143, 17, 0.2);
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.conversation-item:hover {
+  background-color: rgba(0, 255, 65, 0.1);
+}
+
+.conversation-item.active {
+  background-color: rgba(0, 255, 65, 0.2);
+  border-left: 3px solid var(--primary-color);
+}
+
+.conversation-user {
+  color: var(--primary-color);
+  font-family: "Share Tech Mono", monospace;
+  margin-bottom: 5px;
+}
+
+.conversation-preview {
+  font-size: 12px;
+  color: #999;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.message-view {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.no-conversation {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: #777;
+}
+
+.message-header {
+  padding: 15px;
+  border-bottom: 1px solid var(--secondary-color);
+  color: var(--primary-color);
+  font-family: "Share Tech Mono", monospace;
+}
+
+.message-content {
+  flex-grow: 1;
+  padding: 15px;
+  overflow-y: auto;
+}
+
+.message-item {
+  margin-bottom: 15px;
+}
+
+.message-sender {
+  color: var(--primary-color);
+  font-size: 14px;
+  margin-bottom: 5px;
+}
+
+.message-text {
+  background-color: rgba(0, 143, 17, 0.1);
+  padding: 10px;
+  border-left: 2px solid var(--secondary-color);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.message-input {
+  padding: 15px;
+  border-top: 1px solid var(--secondary-color);
+  display: flex;
+}
+
+.message-input textarea {
+  flex-grow: 1;
+  padding: 10px;
+  background-color: var(--darker-color);
+  border: 1px solid var(--secondary-color);
+  color: var(--text-color);
+  font-family: "Orbitron", sans-serif;
+  outline: none;
+  resize: none;
+  height: 80px;
+}
+
+.message-input textarea:focus {
+  border-color: var(--primary-color);
+}
+
+.message-input button {
+  margin-left: 10px;
+  align-self: flex-end;
+}
+
+.post-form {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--primary-color);
+  font-family: "Share Tech Mono", monospace;
+  font-size: 14px;
+}
+
+.form-group input,
+.form-group textarea {
+  width: 100%;
+  padding: 10px;
+  background-color: var(--darker-color);
+  border: 1px solid var(--secondary-color);
+  color: var(--text-color);
+  font-family: "Orbitron", sans-serif;
+  outline: none;
+}
+
+.form-group textarea {
+  height: 150px;
+  resize: vertical;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+  border-color: var(--primary-color);
+}
+
+@media (max-width: 768px) {
+  .cyber-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .cyber-nav {
+    margin: 15px 0;
+  }
+
+  .user-info {
+    align-items: flex-start;
+  }
+
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .profile-card {
+    grid-column: span 1;
+  }
+
+  .messages-container {
+    flex-direction: column;
+    height: auto;
+  }
+
+  .conversation-list {
+    width: 100%;
+    border-right: none;
+    border-bottom: 1px solid var(--secondary-color);
+  }
+}
+
+@keyframes matrixRain {
+  0% {
+    transform: translateY(-100%);
+  }
+  100% {
+    transform: translateY(100vh);
+  }
+}
+
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(5px);
+}
+
+.modal-content {
+  background-color: var(--darker-color);
+  margin: 10% auto;
+  padding: 25px;
+  border: 1px solid var(--primary-color);
+  width: 90%;
+  max-width: 400px;
+  position: relative;
+  box-shadow: 0 0 20px rgba(0, 255, 65, 0.3);
+}
+
+.close-modal {
+  color: var(--primary-color);
+  position: absolute;
+  top: 10px;
+  right: 20px;
+  font-size: 28px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.close-modal:hover {
+  color: var(--secondary-color);
+}
+
+.auth-tabs {
+  display: flex;
+  margin-bottom: 20px;
+  border-bottom: 1px solid var(--secondary-color);
+}
+
+.tab {
+  padding: 10px 20px;
+  cursor: pointer;
+  color: var(--text-color);
+  font-family: "Share Tech Mono", monospace;
+  border-bottom: 3px solid transparent;
+}
+
+.tab.active {
+  color: var(--primary-color);
+  border-bottom-color: var(--primary-color);
+}
+
+.auth-form {
+  display: none;
+}
+
+.auth-form.active {
+  display: block;
+}
+
+.auth-error {
+  color: var(--error-color);
+  margin-top: 15px;
+  font-size: 14px;
+  min-height: 20px;
+}
+
+/* Заблокированные элементы */
+.locked {
+  position: relative;
+  opacity: 0.7;
+  pointer-events: visible;
+}
+
+.locked::after {
+  content: "🔒";
+  position: absolute;
+  right: -15px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 12px;
+}
+
+.text {
+  position: absolute;
+  top: 60px;
+  margin: 20px 0;
+  font-size: 15px;
+  color: #fff;
+}
+
+.header-icons {
+  display: flex;
+  gap: 15px; /* Расстояние между иконками */
+  align-items: center;
+}
+
+.header-icon {
+  /* Стили для ваших иконок */
+  width: 30px;
+  height: 30px;
+}
+
+.header-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.locked:hover::after {
+  content: "🔓";
+}
+
+/* Баннеры с предупреждениями */
+.alert-banner {
+  padding: 15px;
+  margin-bottom: 20px;
+  font-family: "Share Tech Mono", monospace;
+  font-size: 14px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.alert-banner::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.1) 50%,
+    transparent 100%
+  );
+  animation: shine 3s infinite;
+}
+
+@keyframes shine {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.alert-banner.red {
+  background-color: rgba(255, 0, 51, 0.2);
+  border-left: 5px solid var(--error-color);
+  color: #ffccd5;
+}
+
+.alert-banner.yellow {
+  background-color: rgba(255, 204, 0, 0.2);
+  border-left: 5px solid #ffcc00;
+  color: #fff2cc;
+}
+
+.alert-content {
+  position: relative;
+  z-index: 1;
+}
+
+/* Улучшенный матричный дождь */
+.matrix-rain {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  opacity: 0.15;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.matrix-column {
+  position: absolute;
+  top: 0;
+  width: 20px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.matrix-char {
+  color: var(--primary-color);
+  font-family: "Share Tech Mono", monospace;
+  font-size: 18px;
+  text-shadow: 0 0 5px var(--primary-color);
+  opacity: 0;
+  animation: matrix-fall linear infinite;
+}
+
+@keyframes matrix-fall {
+  0% {
+    transform: translateY(-100px);
+    opacity: 0;
+  }
+  5% {
+    opacity: 1;
+  }
+  80% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(100vh);
+    opacity: 0;
+  }
+}
+
+button {
+  font-family: "Rajdhani", sans-serif;
+  letter-spacing: 1px;
+  border: 1px solid #00ff41; /* неоново-зелёный */
+}
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="matrix-rain"></div>
+    <div class="container">
+        <!-- Auth Modal -->
+        <div id="authModal" class="modal" style="display: none;">
+            <div class="modal-content cyber-card">
+                <span class="close-modal">�</span>
+                <div class="auth-tabs">
+                    <div class="tab active" data-tab="login">LOGIN</div>
+                    <div class="tab" data-tab="register">REGISTER</div>
+                </div>
+
+                                
+                
+                <div id="loginForm" class="auth-form active">
+                    <form method="post" action="">
+                        <input type="hidden" name="action" value="login">
+                        <div class="form-group">
+                            <label for="loginUsername">USERNAME:</label>
+                            <input type="text" id="loginUsername" name="username" placeholder="USER_" required="">
+                        </div>
+                        <div class="form-group">
+                            <label for="loginPassword">PASSWORD:</label>
+                            <input type="password" id="loginPassword" name="password" placeholder="••••••••" required="">
+                        </div>
+                        <button type="submit" class="cyber-button" id="loginButton">LOGIN</button>
+                    </form>
+                </div>
+
+                <div id="registerForm" class="auth-form">
+                    <form method="post" action="">
+                        <input type="hidden" name="action" value="register">
+                        <div class="form-group">
+                            <label for="regUsername">USERNAME:</label>
+                            <input type="text" id="regUsername" name="username" placeholder="USER_" required="">
+                        </div>
+                        <div class="form-group">
+                            <label for="regPassword">PASSWORD:</label>
+                            <input type="password" id="regPassword" name="password" placeholder="••••••••" required="">
+                        </div>
+                        <div class="form-group">
+                            <label for="regConfirm">CONFIRM PASSWORD:</label>
+                            <input type="password" id="regConfirm" name="confirm" placeholder="••••••••" required="">
+                        </div>
+                        <button type="submit" class="cyber-button" id="registerButton">REGISTER</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <header class="cyber-header">
+    <div class="logo">
+        <span class="logo-bracket">[</span>
+        <span class="logo-text">THE_TIME</span>
+        <span class="logo-bracket">]</span>
+        <p class="text">Tokenizing people's IRL time.</p>
+    </div>
+    
+    <!-- Контейнер для иконок -->
+    <div class="header-icons">
+        <!-- Первая иконка (замените на свою) -->
+        <a href="https://t.me/The_Time_Solana" class="header-icon"><img src="images/icons8t.png" alt=""></a>
+        <!-- Вторая иконка (замените на свою) -->
+        <a href="https://t.me/The_Time_Solana" class="header-icon"><img src="images/icons8x.png" alt=""></a>
+    </div>
+    
+    <nav class="cyber-nav">
+        <ul>
+            <li>
+                <a href="?section=catalog" class="active">CATALOG</a>
+            </li>
+            <li>
+                <a href="?section=dashboard" class="locked">DASHBOARD</a>
+            </li>
+            <li>
+                <a href="?section=messages" class="locked">MESSAGES</a>
+            </li>
+            <li>
+                <a href="?section=post" class="locked">POST OFFER</a>
+            </li>
+        </ul>
+    </nav>
+    <div class="user-info">
+                    <button id="authButton" class="cyber-button small">LOGIN</button>
+            </div>
+</header>
+
+        <main>
+            <!-- Alert Banners -->
+            <div class="alert-banner red">
+                <div class="alert-content">
+                    WARNING: PLATFORM IN BETA TESTING. SOME FEATURES MAY NOT WORK.
+                </div>
+            </div>
+
+            <div class="alert-banner yellow">
+                <div class="alert-content">
+                    NEW RULES: MINIMUM TASK COST - 50 $TIME
+                </div>
+            </div>
+
+            <section id="catalog" class="section active">
+                <h2 class="cyber-title">// TASK CATALOG</h2>
+                <div class="search-bar">
+                    <input type="text" placeholder="SEARCH...">
+                    <button class="cyber-button">SEARCH</button>
+                </div>
+                <div class="offer-list" id="offerList">
+                                            <div class="offer-card">
+                            <h3 class="offer-title">Hi there</h3>
+                            <p class="offer-description">desc</p>
+                            <div class="offer-price">$TIME: 50</div>
+                            <div class="offer-author">@user</div>
+                            <div class="offer-actions">
+                                                                    <button class="cyber-button small message" onclick="showAuthModal()">MESSAGE</button>
+                                    <button class="cyber-button small" onclick="showAuthModal()">BUY</button>
+                                                            </div>
+                        </div>
+                                    </div>
+            </section>
+
+                    </main>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Initialize Matrix Rain
+            
+            // Modal controls
+            const authModal = document.getElementById("authModal");
+            const authButton = document.getElementById("authButton");
+            const closeModal = document.querySelector(".close-modal");
+            const tabs = document.querySelectorAll(".tab");
+            const authForms = document.querySelectorAll(".auth-form");
+            
+            function showAuthModal() {
+                authModal.style.display = "block";
+                document.querySelector('.tab[data-tab="login"]').click();
+            }
+            
+            if (authButton) {
+                authButton.addEventListener("click", showAuthModal);
+            }
+            
+            closeModal.addEventListener("click", () => {
+                authModal.style.display = "none";
+            });
+            
+            window.addEventListener("click", (e) => {
+                if (e.target === authModal) {
+                    authModal.style.display = "none";
+                }
+            });
+            
+            tabs.forEach((tab) => {
+                tab.addEventListener("click", () => {
+                    tabs.forEach((t) => t.classList.remove("active"));
+                    authForms.forEach((f) => f.classList.remove("active"));
+                    
+                    tab.classList.add("active");
+                    document.getElementById(`${tab.dataset.tab}Form`).classList.add("active");
+                });
+            });
+            
+            // Navigation controls
+            const lockedElements = document.querySelectorAll(".locked");
+            
+            lockedElements.forEach((el) => {
+                el.addEventListener("click", function(e) {
+                    if (this.classList.contains("locked")) {
+                        e.preventDefault();
+                        showAuthModal();
+                    }
+                });
+            });
+            
+            // Matrix Rain Effect
+            function initMatrixRain() {
+                const container = document.querySelector(".matrix-rain");
+                const chars = "01アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン";
+                const columns = Math.floor(window.innerWidth / 20);
+                
+                for (let i = 0; i < columns; i++) {
+                    const column = document.createElement("div");
+                    column.className = "matrix-column";
+                    column.style.left = `${i * 20}px`;
+                    column.style.animationDelay = `${Math.random() * 5}s`;
+                    
+                    const charsCount = 30 + Math.floor(Math.random() * 20);
+                    for (let j = 0; j < charsCount; j++) {
+                        const char = document.createElement("div");
+                        char.className = "matrix-char";
+                        char.textContent = chars[Math.floor(Math.random() * chars.length)];
+                        char.style.animationDuration = `${3 + Math.random() * 7}s`;
+                        char.style.animationDelay = `${Math.random() * 5}s`;
+                        column.appendChild(char);
+                    }
+                    
+                    container.appendChild(column);
+                }
+            }
+            
+            // Global functions
+            window.showMessageDialog = function(username, userId) {
+                window.location.href = `?section=messages&conversation_user=${userId}`;
+            };
+            
+            window.buyTime = function(price, offerId) {
+                if (confirm(`Are you sure you want to buy this service for ${price} $TIME?`)) {
+                    // In a real app, this would be an AJAX call to the server
+                    alert(`Transaction initiated for ${price} $TIME`);
+                }
+            };
+            
+            window.toggleOffer = function(offerId, newStatus) {
+                // In a real app, this would be an AJAX call to the server
+                fetch('toggle_offer.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        offer_id: offerId,
+                        is_active: newStatus
+                    }),
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        window.location.reload();
+                    } else {
+                        alert('Error: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+            };
+        });
+    </script>
+
+</body></html>
